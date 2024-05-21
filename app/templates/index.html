@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pakar Kepribadian</title>
+</head>
+<body>
+    <h1>Sistem Pakar Kepribadian</h1>
+    <form method="POST">
+        <h2>Pilih Ciri-ciri Kepribadian Anda:</h2>
+        {% for trait in traits %}
+            <div>
+                <input type="checkbox" name="traits" value="{{ trait.code }}"> {{ trait.description }}
+            </div>
+        {% endfor %}
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if result %}
+        <h2>Hasil Kepribadian Anda:</h2>
+        <p>{{ result }}</p>
+    {% endif %}
+</body>
+</html>
