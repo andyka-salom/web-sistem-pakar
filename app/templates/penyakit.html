@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Eye Disease Diagnosis</h1>
+<form method="post">
+    {% for gejala in gejala %}
+        <div>
+            <input type="checkbox" name="gejala" value="{{ gejala.code }}"> {{ gejala.nama }}
+        </div>
+    {% endfor %}
+    <button type="submit">Diagnose</button>
+</form>
+{% if result %}
+    <h2>Result: {{ result }}</h2>
+{% endif %}
+{% endblock %}

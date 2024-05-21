@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Personality Diagnosis</h1>
+<form method="post">
+    {% for trait in traits %}
+        <div>
+            <input type="checkbox" name="traits" value="{{ trait.code }}"> {{ trait.description }}
+        </div>
+    {% endfor %}
+    <button type="submit">Diagnose</button>
+</form>
+{% if result %}
+    <h2>Result: {{ result }}</h2>
+{% endif %}
+{% endblock %}
