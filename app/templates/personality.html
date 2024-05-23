@@ -1,15 +1,49 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
+
 {% block content %}
-<h1>Personality Diagnosis</h1>
-<form method="post">
-    {% for trait in traits %}
-        <div>
-            <input type="checkbox" name="traits" value="{{ trait.code }}"> {{ trait.description }}
+<section id="personality-diagnosis" class="container">
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <div class="section-title wow fadeInUp" data-wow-delay="0.1s">
+                <h3>Personality Diagnosis</h3>
+            </div>
+            <form method="post" class="form-horizontal">
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        {% for i in range(0, traits|length, 2) %}
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="traits" value="{{ traits[i].code }}"> {{ traits[i].description }}
+                                    </label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        {% for i in range(1, traits|length, 2) %}
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="traits" value="{{ traits[i].code }}"> {{ traits[i].description }}
+                                    </label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary">Diagnose</button>
+                </div>
+            </form>
         </div>
-    {% endfor %}
-    <button type="submit">Diagnose</button>
-</form>
-{% if result %}
-    <h2>Result: {{ result }}</h2>
-{% endif %}
+        <div class="col-md-6 col-sm-12">
+            {% if result %}
+                <div class="alert alert-success text-center wow fadeInUp" data-wow-delay="0.1s">
+                    <h2>Result: {{ result }}</h2>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
 {% endblock %}

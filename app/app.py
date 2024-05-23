@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request
-from models import db, Trait, Personality, ExpertSystem, Penyakit, Gejala, Keputusan  # Pastikan model diimport dengan benar
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
+from models import db, Trait, Personality, ExpertSystem, Penyakit, Gejala, Aturan
 from config import Config
 
 app = Flask(__name__)
@@ -23,9 +23,6 @@ def personality():
 def get_traits():
     return Trait.query.all()
 
-def get_gejala():
-    return Gejala.query.all()
-
 def get_personality(trait_codes):
     personalities = Personality.query.all()
     for personality in personalities:
@@ -37,34 +34,53 @@ def get_personality(trait_codes):
             return personality.name
     return "Kepribadian tidak ditemukan"
 
-
-
-
-
-
-
-@app.route('/penyakit', methods=['GET', 'POST'])
-def penyakit():
+@app.route('/diagnose', methods=['GET', 'POST'])
+def diagnose():
     if request.method == 'POST':
-        selected_gejala = request.form.getlist('gejala')
-        if selected_gejala:
-            # Find the disease based on the selected symptoms
-            result = get_penyakit(selected_gejala)
-            return render_template('penyakit.html', gejala=get_gejala(), result=result)
-    return render_template('penyakit.html', gejala=get_gejala())
+        selected_symptoms = request.form.getlist('gejala')
+        confidence_levels = request.form.getlist('confidence')
 
+        if not selected_symptoms or not confidence_levels:
+            return jsonify(error="Silakan pilih setidaknya satu gejala dan tingkat kepercayaannya."), 400
 
+        selected_symptoms_with_confidence = list(zip(selected_symptoms, map(float, confidence_levels)))
 
-def get_penyakit(gejala_codes):
-    penyakit_list = Penyakit.query.all()
-    for penyakit in penyakit_list:
-        gejala_ids = [gejala.id for gejala in Gejala.query.filter(Gejala.code.in_(gejala_codes)).all()]
-        keputusan_entries = Keputusan.query.filter_by(penyakit_id=penyakit.id).all()
-        keputusan_gejala_ids = [entry.gejala_id for entry in keputusan_entries]
+        hasil_diagnosa = calculate_cf(selected_symptoms_with_confidence)
+        return jsonify(hasil_diagnosa)
+    
+    gejala_list = Gejala.query.all()
+    return render_template('penyakit.html', gejala_list=gejala_list)
 
-        if set(gejala_ids) == set(keputusan_gejala_ids):
-            return penyakit.nama
-    return "Penyakit tidak ditemukan"
+def calculate_cf(selected_symptoms_with_confidence):
+    penyakit_cf = {}
+    aturan_list = Aturan.query.all()
+
+    for kode_gejala, confidence in selected_symptoms_with_confidence:
+        for aturan in aturan_list:
+            if aturan.kode_gejala == kode_gejala:
+                if aturan.kode_penyakit not in penyakit_cf:
+                    penyakit_cf[aturan.kode_penyakit] = 0
+                cf_expert = aturan.cf_value
+                cf_user = confidence
+                combined_cf = cf_expert * cf_user
+                penyakit_cf[aturan.kode_penyakit] = combine_cf(penyakit_cf[aturan.kode_penyakit], combined_cf)
+    
+    hasil_diagnosa = [
+        {
+            'nama_penyakit': Penyakit.query.get(kode_penyakit).nama_penyakit,
+            'cf_value': penyakit_cf[kode_penyakit] * 100  
+        }
+        for kode_penyakit in penyakit_cf
+    ]
+
+    hasil_diagnosa.sort(key=lambda x: x['cf_value'], reverse=True)
+    return hasil_diagnosa
+
+def combine_cf(cf1, cf2):
+    if cf1 == 0:
+        return cf2
+    return cf1 + cf2 * (1 - cf1)
+
 
 if __name__ == '__main__':
     with app.app_context():

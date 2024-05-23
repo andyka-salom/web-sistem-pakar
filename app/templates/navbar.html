@@ -1,8 +1,19 @@
-<!-- navbar.html -->
-<header>
-    <h1>My Flask App</h1>
-    <nav>
-        <a href="{{ url_for('landing') }}">Home</a>
-        <a href="{{ url_for('login') }}">Login</a>
-    </nav>
-</header>
+<section class="navbar navbar-default navbar-static-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon icon-bar"></span>
+                <span class="icon icon-bar"></span>
+                <span class="icon icon-bar"></span>
+            </button>
+            <a href="{{ url_for('landing_page') }}" class="navbar-brand"><i class="fa fa-h-square"></i>ealth Diagnosis</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{{ url_for('landing_page') }}" class="smoothScroll">Home</a></li>
+                <li><a href="{{ url_for('personality') }}" class="smoothScroll">Personality Diagnosis</a></li>
+                <li><a href="{{ url_for('diagnose') }}" class="smoothScroll">Eye Disease Diagnosis</a></li>
+            </ul>
+        </div>
+    </div>
+</section>

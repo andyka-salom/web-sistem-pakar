@@ -1,15 +1,64 @@
-{% extends "layout.html" %}
+{% extends 'base.html' %}
+
 {% block content %}
-<h1>Eye Disease Diagnosis</h1>
-<form method="post">
-    {% for gejala in gejala %}
-        <div>
-            <input type="checkbox" name="gejala" value="{{ gejala.code }}"> {{ gejala.nama }}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h3 class="text-center mb-4">Eye Disease Diagnosis</h3>
+            <form id="diagnose-form" method="POST" action="{{ url_for('diagnose') }}">
+                {% for gejala in gejala_list %}
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" name="gejala" value="{{ gejala.kode_gejala }}" id="{{ gejala.kode_gejala }}">
+                    <label class="form-check-label" for="{{ gejala.kode_gejala }}">{{ gejala.nama_gejala }}</label>
+                    <select name="confidence" class="form-control mt-2">
+                        <option value="0.0">Tidak Yakin (0.0)</option>
+                        <option value="0.2">Sedikit Tidak Yakin (0.2)</option>
+                        <option value="0.4">Sedikit Yakin (0.4)</option>
+                        <option value="0.6">Cukup Yakin (0.6)</option>
+                        <option value="0.8">Yakin (0.8)</option>
+                        <option value="1.0">Sangat Yakin (1.0)</option>
+                    </select>
+                </div>
+                {% endfor %}
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary" id="diagnose-btn">Diagnosa</button>
+                </div>
+            </form>
+            <div id="result-container" class="mt-4" style="display: none;">
+                <h2 class="text-center">Hasil Diagnosis</h2>
+                <div id="result"></div>
+            </div>
         </div>
-    {% endfor %}
-    <button type="submit">Diagnose</button>
-</form>
-{% if result %}
-    <h2>Result: {{ result }}</h2>
-{% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('diagnose-form');
+        const resultContainer = document.getElementById('result-container');
+        const resultElement = document.getElementById('result');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            fetch(this.action, {
+                method: 'POST',
+                body: new FormData(this)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    const resultHTML = data.map(item => `<p><strong>${item.nama_penyakit}:</strong> ${item.cf_value.toFixed(2)}%</p>`).join('');
+                    resultElement.innerHTML = resultHTML;
+                    resultContainer.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+</script>
 {% endblock %}

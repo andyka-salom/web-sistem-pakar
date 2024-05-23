@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}Health - Medical Website Template{% endblock %}</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="Tooplate">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.theme.default.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tooplate-style.css') }}">
+    <style>
+        /* Additional CSS */
+        #news .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+        #news .row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        #news .col-md-4, #news .col-sm-6 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .image-container img {
+            height: 250px;
+        }
+        footer .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        footer .row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+        footer .col-md-12 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        footer .copyright-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        footer .copyright-text p {
+            margin: 0.5em 0;
+        }
+        footer .copyright-text a {
+            margin: 0 10px;
+            color: inherit;
+            text-decoration: none;
+        }
+        footer .copyright-text a:hover {
+            color: #0077b5;
+        }
+        footer .fab {
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body id="top" data-spy="scroll" data-target=".navbar-collapse" data-offset="50">
+    {% include 'navbar.html' %}
+    {% block content %}{% endblock %}
+    {% include 'footer.html' %}
+    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.sticky.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.stellar.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/wow.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/smoothscroll.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+</body>
+</html>

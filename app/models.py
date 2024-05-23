@@ -22,30 +22,22 @@ class ExpertSystem(db.Model):
 
 class Penyakit(db.Model):
     __tablename__ = 'penyakit'
-    id = db.Column(db.Integer, primary_key=True)
-    kode = db.Column(db.String(10), nullable=False)
-    nama = db.Column(db.String(100), nullable=False)
+    kode_penyakit = db.Column(db.String, primary_key=True)
+    nama_penyakit = db.Column(db.String, nullable=False)
 
 class Gejala(db.Model):
     __tablename__ = 'gejala'
-    id = db.Column(db.Integer, primary_key=True)
-    kode = db.Column(db.String(10), nullable=False)
-    nama = db.Column(db.String(100), nullable=False)
+    kode_gejala = db.Column(db.String, primary_key=True)
+    nama_gejala = db.Column(db.String, nullable=False)
 
-class Keputusan(db.Model):
-    __tablename__ = 'keputusan_data'
+class Aturan(db.Model):
+    __tablename__ = 'aturan'
     id = db.Column(db.Integer, primary_key=True)
-    kode_penyakit = db.Column(db.String(10), nullable=False)
-    kode_gejala = db.Column(db.String(255), nullable=False)  # Perubahan panjang kolom kode_gejala
-    penyakit_id = db.Column(db.Integer, db.ForeignKey('penyakit.id'))
-    gejala_id = db.Column(db.Integer, db.ForeignKey('gejala.id'))
+    kode_penyakit = db.Column(db.String, db.ForeignKey('penyakit.kode_penyakit'), nullable=False)
+    kode_gejala = db.Column(db.String, db.ForeignKey('gejala.kode_gejala'), nullable=False)
+    cf_value = db.Column(db.Float, nullable=False)
 
-class NilaiCFGejala(db.Model):
-    __tablename__ = 'nilai_cf_gejala'
-    id = db.Column(db.Integer, primary_key=True)
-    penyakit_id = db.Column(db.Integer, db.ForeignKey('penyakit.id'), nullable=False)
-    gejala_id = db.Column(db.Integer, db.ForeignKey('gejala.id'), nullable=False)
-    nilai_cf = db.Column(db.Float, nullable=False)
+    penyakit = db.relationship('Penyakit', backref='aturan')
+    gejala = db.relationship('Gejala', backref='aturan')
 
-    penyakit = db.relationship('Penyakit', backref=db.backref('nilai_cf_gejala', lazy=True))
-    gejala = db.relationship('Gejala', backref=db.backref('nilai_cf_gejala', lazy=True))
+
