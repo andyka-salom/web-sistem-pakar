@@ -53,33 +53,48 @@ def diagnose():
 
 def calculate_cf(selected_symptoms_with_confidence):
     penyakit_cf = {}
+    penyakit_gejala_count = {}
+
     aturan_list = Aturan.query.all()
 
     for kode_gejala, confidence in selected_symptoms_with_confidence:
         for aturan in aturan_list:
             if aturan.kode_gejala == kode_gejala:
                 if aturan.kode_penyakit not in penyakit_cf:
-                    penyakit_cf[aturan.kode_penyakit] = 0
+                    penyakit_cf[aturan.kode_penyakit] = []
+                    penyakit_gejala_count[aturan.kode_penyakit] = 0
+
                 cf_expert = aturan.cf_value
                 cf_user = confidence
-                combined_cf = cf_expert * cf_user
-                penyakit_cf[aturan.kode_penyakit] = combine_cf(penyakit_cf[aturan.kode_penyakit], combined_cf)
+                combined_cf = cf_expert + cf_user * (1 - cf_expert)
+                penyakit_cf[aturan.kode_penyakit].append(combined_cf)
+
+                # Increment gejala count
+                penyakit_gejala_count[aturan.kode_penyakit] += 1
     
+    final_penyakit_cf = {}
+    for kode_penyakit, cf_values in penyakit_cf.items():
+        if penyakit_gejala_count[kode_penyakit] >= 2:  # Only consider diseases with at least 2 symptoms
+            final_cf = cf_values[0]
+            for cf in cf_values[1:]:
+                final_cf = combine_cf(final_cf, cf)
+            final_penyakit_cf[kode_penyakit] = final_cf
+
     hasil_diagnosa = [
         {
             'nama_penyakit': Penyakit.query.get(kode_penyakit).nama_penyakit,
-            'cf_value': penyakit_cf[kode_penyakit] * 100  
+            'cf_value': final_penyakit_cf[kode_penyakit] * 100
         }
-        for kode_penyakit in penyakit_cf
+        for kode_penyakit in final_penyakit_cf
     ]
 
     hasil_diagnosa.sort(key=lambda x: x['cf_value'], reverse=True)
     return hasil_diagnosa
 
 def combine_cf(cf1, cf2):
-    if cf1 == 0:
-        return cf2
-    return cf1 + cf2 * (1 - cf1)
+    combined_cf = cf1 + cf2 * (1 - cf1)
+    return combined_cf if combined_cf <= 1 else 1
+
 
 
 if __name__ == '__main__':

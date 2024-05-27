@@ -12,11 +12,11 @@
                     <label class="form-check-label" for="{{ gejala.kode_gejala }}">{{ gejala.nama_gejala }}</label>
                     <select name="confidence" class="form-control mt-2">
                         <option value="0.0">Tidak Yakin (0.0)</option>
-                        <option value="0.2">Sedikit Tidak Yakin (0.2)</option>
-                        <option value="0.4">Sedikit Yakin (0.4)</option>
+                        <option value="0.2">Mungkin (0.2)</option>
+                        <option value="0.4">Sedikit tidak Yakin (0.4)</option>
                         <option value="0.6">Cukup Yakin (0.6)</option>
                         <option value="0.8">Yakin (0.8)</option>
-                        <option value="1.0">Sangat Yakin (1.0)</option>
+                        <option value="0.9">Sangat Yakin (0.9)</option>
                     </select>
                 </div>
                 {% endfor %}

@@ -53,25 +53,6 @@ expert_system = {
     "P03": ["C017", "C018", "C019", "C020", "C021", "C022", "C023", "C024"],
     "P04": ["C025", "C026", "C027", "C028", "C029", "C030", "C031", "C032"]
 }
-
-diseases = {
-    "P01": "Ablasi Retina",
-    "P02": "Konjungtivitis",
-    "P03": "Bintit",
-    "P04": "Blefaritis",
-    "P05": "Dakriosistitis",
-    "P06": "Dermatokalasis",
-    "P07": "Endoftalmitis",
-    "P08": "Entropion",
-    "P09": "Pengembara",
-    "P10": "Glaukoma",
-    "P11": "Iritasi",
-    "P12": "Katarak",
-    "P13": "Keratitis",
-    "P14": "Minus",
-    "P15": "Plus"
-    }
-
 logging.basicConfig(level=logging.INFO)
 engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
 
