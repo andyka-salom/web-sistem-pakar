@@ -114,18 +114,24 @@ def calculate_cf(selected_symptoms_with_confidence):
     hasil_diagnosa = [
         {
             'nama_penyakit': Penyakit.query.get(kode_penyakit).nama_penyakit,
+            'deskripsi': Penyakit.query.get(kode_penyakit).deskripsi,
             'cf_value': final_penyakit_cf[kode_penyakit] * 100
         }
         for kode_penyakit in final_penyakit_cf
     ]
 
+    # Sort the results by cf_value in descending order
     hasil_diagnosa.sort(key=lambda x: x['cf_value'], reverse=True)
+
+    # Limit to top 3 results if there are more than 3
+    if len(hasil_diagnosa) > 3:
+        hasil_diagnosa = hasil_diagnosa[:3]
+
     return hasil_diagnosa
 
 def combine_cf(cf1, cf2):
     combined_cf = cf1 + cf2 * (1 - cf1)
     return combined_cf if combined_cf <= 1 else 1
-
 
 
 if __name__ == '__main__':

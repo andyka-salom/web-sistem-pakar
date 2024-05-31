@@ -24,6 +24,7 @@ class Penyakit(db.Model):
     __tablename__ = 'penyakit'
     kode_penyakit = db.Column(db.String, primary_key=True)
     nama_penyakit = db.Column(db.String, nullable=False)
+    deskripsi = db.Column(db.String, nullable=False)
 
 class Gejala(db.Model):
     __tablename__ = 'gejala'

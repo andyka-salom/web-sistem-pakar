@@ -4,22 +4,23 @@ from config import Config
 
 # Data penyakit
 diseases = {
-    "P01": "Ablasi Retina",
-    "P02": "Konjungtivitis",
-    "P03": "Bintit",
-    "P04": "Blefaritis",
-    "P05": "Dakriosistitis",
-    "P06": "Dermatokalasis",
-    "P07": "Endoftalmitis",
-    "P08": "Entropion",
-    "P09": "Pengembara",
-    "P10": "Glaukoma",
-    "P11": "Iritasi",
-    "P12": "Katarak",
-    "P13": "Keratitis",
-    "P14": "Minus",
-    "P15": "Plus"
+    "P01": {"name": "Ablasi Retina", "description": "Ablasi retina adalah kondisi di mana retina terlepas dari jaringan di sekitarnya yang menyediakan oksigen dan nutrisi."},
+    "P02": {"name": "Konjungtivitis", "description": "Konjungtivitis adalah peradangan atau infeksi pada konjungtiva, lapisan tipis yang melapisi bagian putih mata dan bagian dalam kelopak mata."},
+    "P03": {"name": "Bintit", "description": "Bintit adalah benjolan merah yang menyakitkan di dekat tepi kelopak mata yang biasanya disebabkan oleh infeksi bakteri."},
+    "P04": {"name": "Blefaritis", "description": "Blefaritis adalah peradangan pada kelopak mata, sering kali melibatkan bagian di mana bulu mata tumbuh."},
+    "P05": {"name": "Dakriosistitis", "description": "Dakriosistitis adalah infeksi pada kantung air mata (kantung lakrimalis), biasanya disebabkan oleh penyumbatan pada saluran air mata."},
+    "P06": {"name": "Dermatokalasis", "description": "Dermatokalasis adalah kondisi di mana kulit kelopak mata menjadi berlebih dan kendur, sering kali disebabkan oleh penuaan."},
+    "P07": {"name": "Endoftalmitis", "description": "Endoftalmitis adalah infeksi serius pada bagian dalam mata, biasanya akibat komplikasi dari operasi mata atau cedera mata."},
+    "P08": {"name": "Entropion", "description": "Entropion adalah kondisi di mana kelopak mata melipat ke dalam sehingga bulu mata dan kulit menggosok permukaan mata."},
+    "P09": {"name": "Pengembara", "description": "Pengembara adalah peradangan berat pada sklera, lapisan putih mata."},
+    "P10": {"name": "Glaukoma", "description": "Glaukoma adalah sekelompok kondisi mata yang merusak saraf optik, seringkali karena tekanan tinggi dalam mata."},
+    "P11": {"name": "Iritasi", "description": "Iritasi adalah peradangan pada iris, bagian berwarna mata."},
+    "P12": {"name": "Katarak", "description": "Katarak adalah kekeruhan pada lensa mata yang menyebabkan penurunan penglihatan."},
+    "P13": {"name": "Keratitis", "description": "Keratitis adalah peradangan pada kornea, lapisan depan mata."},
+    "P14": {"name": "Minus", "description": "Minus atau miopia adalah kondisi di mana mata dapat melihat objek dekat dengan jelas tetapi sulit melihat objek yang jauh."},
+    "P15": {"name": "Plus", "description": "Plus atau hipermetropia adalah kondisi di mana mata dapat melihat objek yang jauh dengan jelas tetapi sulit melihat objek yang dekat."}
 }
+
 
 # Data gejala
 symptoms = {
@@ -95,11 +96,15 @@ logging.basicConfig(level=logging.INFO)
 engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
 
 with engine.connect() as connection:
-    # Insert diseases
     logging.info("Inserting diseases...")
-    for code, name in diseases.items():
-        connection.execute(text("INSERT INTO penyakit (kode_penyakit, nama_penyakit) VALUES (:code, :name)"), {"code": code, "name": name})
-        logging.info(f"Inserted disease {code} - {name}")
+    for code, details in diseases.items():
+        name = details["name"]
+        description = details["description"]
+        connection.execute(
+            text("INSERT INTO penyakit (kode_penyakit, nama_penyakit, deskripsi) VALUES (:code, :name, :description)"),
+            {"code": code, "name": name, "description": description}
+        )
+        logging.info(f"Inserted disease {code} - {name} - {description}")
 
     # Insert symptoms
     logging.info("Inserting symptoms...")
