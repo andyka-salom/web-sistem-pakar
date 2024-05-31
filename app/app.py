@@ -26,13 +26,44 @@ def get_traits():
 def get_personality(trait_codes):
     personalities = Personality.query.all()
     for personality in personalities:
+        # Kueri untuk mendapatkan semua Trait yang kodenya ada dalam trait_codes
         trait_ids = [trait.id for trait in Trait.query.filter(Trait.code.in_(trait_codes)).all()]
+        # Mengambil semua entri dari tabel ExpertSystem yang personality_id-nya sama dengan id dari personality saat ini
         expert_system_entries = ExpertSystem.query.filter_by(personality_id=personality.id).all()
+        # Mengumpulkan trait_id dari setiap entri ExpertSystem yang ditemukan dalam daftar expert_system_trait_idss 
         expert_system_trait_ids = [entry.trait_id for entry in expert_system_entries]
         
         if set(trait_ids) == set(expert_system_trait_ids):
-            return personality.name
-    return "Kepribadian tidak ditemukan"
+            return get_personality_details(personality.name)
+    return {"name": "Kepribadian tidak ditemukan", "characteristics": "", "positive_traits": "", "negative_traits": ""}
+
+def get_personality_details(personality_name):
+    personalities_details = {
+        "Sanguinis": {
+            "characteristics": "Ekstrovert, optimis, sosial, dan penuh energi.",
+            "positive_traits": "Sanguinis sangat ramah, antusias, dan mudah bergaul. Mereka cenderung humoris, mudah beradaptasi, dan suka menjadi pusat perhatian.",
+            "negative_traits": "Bisa kurang fokus, tidak teratur, dan seringkali terlalu berbicara atau berlebihan dalam bersosialisasi."
+        },
+        "Melankolis": {
+            "characteristics": "Introvert, analitis, detail-oriented, dan perfeksionis.",
+            "positive_traits": "Melankolis sangat teliti, teratur, dan setia. Mereka memiliki pemikiran mendalam dan seringkali kreatif dalam bidang seni atau intelektual.",
+            "negative_traits": "Cenderung mudah cemas, pesimis, dan sering terlalu kritis baik terhadap diri sendiri maupun orang lain."
+        },
+        "Koleris": {
+            "characteristics": "Ekstrovert, dominan, tegas, dan berorientasi pada tujuan.",
+            "positive_traits": "Koleris sangat mandiri, ambisius, dan efektif dalam memimpin. Mereka fokus pada pencapaian tujuan dan seringkali menjadi motivator yang baik.",
+            "negative_traits": "Bisa terlalu keras kepala, kurang peka terhadap perasaan orang lain, dan cenderung memaksakan kehendak."
+        },
+        "Plegmatis": {
+            "characteristics": "Introvert, tenang, damai, dan mudah beradaptasi.",
+            "positive_traits": "Plegmatis sangat sabar, mudah bekerja sama, dan stabil secara emosional. Mereka cenderung setia dan bisa diandalkan dalam situasi apapun.",
+            "negative_traits": "Cenderung pasif, kurang bersemangat, dan bisa menghindari konfrontasi sehingga terlihat kurang tegas."
+        }
+    }
+    return {
+        "name": personality_name,
+        **personalities_details.get(personality_name, {})
+    }
 
 @app.route('/diagnose', methods=['GET', 'POST'])
 def diagnose():

@@ -40,7 +40,10 @@
         <div class="col-md-6 col-sm-12">
             {% if result %}
                 <div class="alert alert-success text-center wow fadeInUp" data-wow-delay="0.1s">
-                    <h2>Result: {{ result }}</h2>
+                    <h1>Hasil Kepribadian: {{ result.name }}</h1>
+                    <p><strong>Karakteristik:</strong> {{ result.characteristics }}</p>
+                    <p><strong>Sifat Positif:</strong> {{ result.positive_traits }}</p>
+                    <p><strong>Sifat Negatif:</strong> {{ result.negative_traits }}</p>
                 </div>
             {% endif %}
         </div>
