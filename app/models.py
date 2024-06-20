@@ -22,23 +22,21 @@ class ExpertSystem(db.Model):
 
 class Penyakit(db.Model):
     __tablename__ = 'penyakit'
-    kode_penyakit = db.Column(db.String, primary_key=True)
-    nama_penyakit = db.Column(db.String, nullable=False)
-    deskripsi = db.Column(db.String, nullable=False)
+    kode_penyakit = db.Column(db.String(10), primary_key=True)  # Contoh panjang 10 karakter
+    nama_penyakit = db.Column(db.String(255), nullable=False)  # Contoh panjang 255 karakter
+    deskripsi = db.Column(db.String(255), nullable=False)  # Contoh panjang 255 karakter
 
 class Gejala(db.Model):
     __tablename__ = 'gejala'
-    kode_gejala = db.Column(db.String, primary_key=True)
-    nama_gejala = db.Column(db.String, nullable=False)
+    kode_gejala = db.Column(db.String(10), primary_key=True)  # Contoh panjang 10 karakter
+    nama_gejala = db.Column(db.String(255), nullable=False)  # Contoh panjang 255 karakter
 
 class Aturan(db.Model):
     __tablename__ = 'aturan'
     id = db.Column(db.Integer, primary_key=True)
-    kode_penyakit = db.Column(db.String, db.ForeignKey('penyakit.kode_penyakit'), nullable=False)
-    kode_gejala = db.Column(db.String, db.ForeignKey('gejala.kode_gejala'), nullable=False)
+    kode_penyakit = db.Column(db.String(10), db.ForeignKey('penyakit.kode_penyakit'), nullable=False)
+    kode_gejala = db.Column(db.String(10), db.ForeignKey('gejala.kode_gejala'), nullable=False)
     cf_value = db.Column(db.Float, nullable=False)
 
-    penyakit = db.relationship('Penyakit', backref='aturan')
-    gejala = db.relationship('Gejala', backref='aturan')
-
-
+    penyakit = db.relationship('Penyakit', backref='aturan', lazy=True)  # Contoh pengaturan relasi
+    gejala = db.relationship('Gejala', backref='aturan', lazy=True)  # Contoh pengaturan relasi
